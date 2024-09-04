@@ -1,31 +1,25 @@
-import { Categories, PostWidget } from '@/components';
-import Head from 'next/head';
+import { PostCard, Categories, PostWidget } from '../components';
+import { getPosts } from '../services';
 
-const posts = [
-  { title: 'React Testing', excerpt: 'Learn React Testing' },
-  { title: 'React with Tailwind', excerpt: 'Learn React with Tailwind' },
-];
+export default async function Home() {
+  // Fetch posts directly inside the component using an async function
+  const posts = await getPosts();
 
-export default function Home() {
   return (
     <div className="container mx-auto px-10 mb-8">
-      <Head>
-        <title>CMS Blog</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Main Posts Section */}
         <div className="lg:col-span-8 col-span-1">
-          {posts.map((post, index) => (
-            <div key={index}>
-              <h1>{post.title}</h1>
-              <p>{post.excerpt}</p>
-            </div>
+          {posts.map((post) => (
+            <PostCard post={post.node} key={post.node.title} />
           ))}
         </div>
+
+        {/* Widgets Section */}
         <div className="lg:col-span-4 col-span-1">
           <div className="lg:sticky relative top-8">
-<PostWidget />
-<Categories />
+            <PostWidget />
+            <Categories />
           </div>
         </div>
       </div>

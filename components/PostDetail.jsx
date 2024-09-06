@@ -36,6 +36,18 @@ const PostDetail = ({ post }) => {
             className="mb-8 w-full rounded-lg"
           />
         );
+      case 'bulleted-list':
+        return (
+          <ul key={index} className="list-disc pl-5 mb-4">
+            {modifiedText.map((item, i) => <li key={i}>{item}</li>)}
+          </ul>
+        );
+      case 'blockquote':
+        return (
+          <blockquote key={index} className="pl-4 border-l-4 border-gray-400 italic mb-4">
+            {modifiedText.map((item, i) => <p key={i}>{item}</p>)}
+          </blockquote>
+        );
       default:
         return modifiedText;
     }
@@ -45,14 +57,26 @@ const PostDetail = ({ post }) => {
     <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
       
       {/* Handle the featured image */}
-      {post.featuredImage.length > 0 && (
-        <div className="relative overflow-hidden shadow-md mb-6">
-          <img
-            src={post.featuredImage[0].url}  // Access the first image in the array
-            alt={post.title}
-            className="object-top w-full h-[500px] object-cover shadow-lg rounded-t-lg lg:rounded-lg"
-          />
-        </div>
+      {Array.isArray(post.featuredImage) ? (
+        post.featuredImage.length > 0 && (
+          <div className="relative overflow-hidden shadow-md mb-6">
+            <img
+              src={post.featuredImage[0].url}  // Access the first image in the array
+              alt={post.title}
+              className="object-top w-full h-[500px] object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+            />
+          </div>
+        )
+      ) : (
+        post.featuredImage && (
+          <div className="relative overflow-hidden shadow-md mb-6">
+            <img
+              src={post.featuredImage.url}  // Access image if it's an object
+              alt={post.title}
+              className="object-top w-full h-[500px] object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+            />
+          </div>
+        )
       )}
 
       <div className="px-4 lg:px-0">
@@ -79,6 +103,7 @@ const PostDetail = ({ post }) => {
         {/* Post Title */}
         <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
 
+        {/* Render the blog content */}
         {post.content.raw.children.map((typeObj, index) => {
           const children = typeObj.children.map((item, itemindex) => getContentFragment(itemindex, item.text, item));
           return getContentFragment(index, children, typeObj, typeObj.type);

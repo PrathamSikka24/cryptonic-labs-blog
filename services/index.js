@@ -41,27 +41,28 @@ export const getPosts = async () => {
   
 // Fetch recent posts (latest 3 posts)
 export const getRecentPosts = async () => {
-  const query = gql`
-    query GetRecentPosts {
-      posts(orderBy: createdAt_DESC, first: 3) {
-        title
-        featuredImage {
-          url
+    const query = gql`
+      query GetRecentPosts {
+        posts(orderBy: createdAt_DESC, first: 3) {
+          title
+          slug
+          createdAt
         }
-        createdAt
-        slug
       }
+    `;
+  
+    try {
+      const headers = {
+        authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN}`,
+      };
+      const result = await request(graphqlAPI, query, {}, headers);
+      console.log("Fetched recent posts:", result.posts);
+      return result.posts;
+    } catch (error) {
+      console.error("Error fetching recent posts:", error);
+      return [];
     }
-  `;
-
-  try {
-    const result = await request(graphqlAPI, query, {}, headers);
-    return result.posts;
-  } catch (error) {
-    console.error("Error fetching recent posts:", error);
-    return [];
-  }
-};
+  };
 
 // Fetch similar posts based on slug and categories
 export const getSimilarPosts = async (categories, slug) => {
@@ -121,7 +122,7 @@ export const getComments = async (slug) => {
   
 
 
-export const getCategories = async () => {
+  export const getCategories = async () => {
     const query = gql`
       query GetCategories {
         categories {
@@ -132,8 +133,11 @@ export const getCategories = async () => {
     `;
   
     try {
+      const headers = {
+        authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN}`,
+      };
       const result = await request(graphqlAPI, query, {}, headers);
-      console.log("Full Categories API response:", result);  // Log the full response
+      console.log("Full Categories API response:", result);
       return result.categories;
     } catch (error) {
       console.error("Error fetching categories:", error);

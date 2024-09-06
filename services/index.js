@@ -6,46 +6,32 @@ const headers = {
 };
 
 // Fetch all posts (with a more reasonable limit instead of an extremely large number)
+
 export const getPosts = async () => {
-  const query = gql`
-    query MyQuery {
-      postsConnection(first: 100) {
-        edges {
-          node {
-            author {
-              bio
-              name
-              id
-              photo {
+    const query = gql`
+      query GetPosts {
+        postsConnection {
+          edges {
+            node {
+              slug
+              title
+              excerpt
+              featuredImage {
                 url
               }
-            }
-            createdAt
-            slug
-            title
-            excerpt
-            featuredImage {
-              url
-            }
-            category {
-              name
-              slug
+              author {
+                name
+              }
+              createdAt
             }
           }
         }
       }
-    }
-  `;
-
-  try {
-    const result = await request(graphqlAPI, query, {}, headers);
+    `;
+  
+    const result = await request(graphqlAPI, query);
     return result.postsConnection.edges;
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    return [];
-  }
-};
-
+  };
 // Fetch recent posts (latest 3 posts)
 export const getRecentPosts = async () => {
   const query = gql`
@@ -98,6 +84,34 @@ export const getSimilarPosts = async (categories, slug) => {
   }
 };
 
+export const getComments = async (slug) => {
+    const query = gql`
+      query GetComments($slug: String!) {
+        comments(where: { post: { slug: $slug } }) {
+          name
+          createdAt
+          comment
+        }
+      }
+    `;
+  
+    const result = await request(graphqlAPI, query, { slug });
+    return result.comments;
+  };
+  
+  export const submitComment = async (commentData) => {
+    const mutation = gql`
+      mutation CreateComment($name: String!, $email: String!, $comment: String!, $slug: String!) {
+        createComment(data: { name: $name, email: $email, comment: $comment, post: { connect: { slug: $slug } } }) {
+          id
+        }
+      }
+    `;
+  
+    const result = await request(graphqlAPI, mutation, commentData);
+    return result;
+  };
+  
 
 
 export const getCategories = async () => {
@@ -119,3 +133,41 @@ export const getCategories = async () => {
       return [];
     }
   };
+
+
+  export const getPostDetails = async (slug) => {
+    const query = gql`
+      query GetPostDetails($slug: String!) {
+        post(where: { slug: $slug }) {
+          title
+          content {
+            raw
+          }
+          featuredImage {
+            url
+          }
+          author {
+            name
+            bio
+            photo {
+              url
+            }
+          }
+          createdAt
+          categories {
+            name
+            slug
+          }
+        }
+      }
+    `;
+  
+    try {
+      const result = await request(graphqlAPI, query, { slug });
+      return result.post;
+    } catch (error) {
+      console.error("Error fetching post details:", error);
+      return null;
+    }
+  };
+  

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { submitComment } from '../services';  // Adjust the path as needed
 
 const CommentsForm = ({ slug }) => {

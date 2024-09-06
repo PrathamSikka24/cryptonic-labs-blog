@@ -7,7 +7,7 @@ import Author from '../../../components/Author'; // Author component
 import Comments from '../../../components/Comments'; // Comments component
 import CommentsForm from '../../../components/CommentsForm'; // CommentsForm component
 
-const PostDetails = async () => {
+const PostDetail = async () => {
 
   return (
     <div className="container mx-auto px-10 mb-8">
@@ -36,4 +36,4 @@ const PostDetails = async () => {
 
 
 
-export default PostDetails;
+export default PostDetail;

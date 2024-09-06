@@ -29,8 +29,13 @@ export const getPosts = async () => {
       }
     `;
   
-    const result = await request(graphqlAPI, query);
-    return result.postsConnection.edges;
+    try {
+      const result = await request(graphqlAPI, query);
+      return result.postsConnection.edges;
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      return [];
+    }
   };
 // Fetch recent posts (latest 3 posts)
 export const getRecentPosts = async () => {
@@ -154,7 +159,7 @@ export const getCategories = async () => {
             }
           }
           createdAt
-          categories {
+          category {
             name
             slug
           }

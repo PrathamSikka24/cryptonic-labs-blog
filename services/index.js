@@ -6,24 +6,26 @@ const headers = {
 };
 
 // Fetch all posts (with a more reasonable limit instead of an extremely large number)
-
 export const getPosts = async () => {
     const query = gql`
-      query GetPosts {
-        postsConnection {
-          edges {
-            node {
-              slug
-              title
-              excerpt
-              featuredImage {
-                url
-              }
-              author {
-                name
-              }
-              createdAt
+      query GetAllPosts {
+        posts {
+          title
+          slug
+          excerpt
+          featuredImage {
+            url
+          }
+          author {
+            name
+            photo {
+              url
             }
+          }
+          createdAt
+          category {
+            name
+            slug
           }
         }
       }
@@ -31,7 +33,8 @@ export const getPosts = async () => {
   
     try {
       const result = await request(graphqlAPI, query);
-      return result.postsConnection.edges;
+      console.log('Fetched Posts:', result.posts); // Make sure the structure is correct
+      return result.posts;
     } catch (error) {
       console.error("Error fetching posts:", error);
       return [];

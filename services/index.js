@@ -5,10 +5,9 @@ const headers = {
   Authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN}`,
 };
 
-// Fetch all posts (with a more reasonable limit instead of an extremely large number)
 export const getPosts = async () => {
     const query = gql`
-      query GetAllPosts {
+      query GetPosts {
         posts {
           title
           slug
@@ -32,14 +31,14 @@ export const getPosts = async () => {
     `;
   
     try {
-      const result = await request(graphqlAPI, query);
-      console.log('Fetched Posts:', result.posts); // Make sure the structure is correct
-      return result.posts;
+      const result = await request(graphqlAPI, query, {}, headers);
+      return result.posts; // Directly return the posts array
     } catch (error) {
       console.error("Error fetching posts:", error);
       return [];
     }
   };
+  
 // Fetch recent posts (latest 3 posts)
 export const getRecentPosts = async () => {
   const query = gql`

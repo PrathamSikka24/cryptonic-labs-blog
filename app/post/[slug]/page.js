@@ -41,7 +41,7 @@ const PostDetails = async ({ params }) => {
 export async function generateStaticParams() {
   const posts = await getPosts();
   return posts.map(post => ({
-    slug: post.node.slug,
+    slug: post.slug,
   }));
 }
 

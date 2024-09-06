@@ -97,3 +97,25 @@ export const getSimilarPosts = async (categories, slug) => {
     return [];
   }
 };
+
+
+
+export const getCategories = async () => {
+    const query = gql`
+      query GetCategories {
+        categories {
+          name
+          slug
+        }
+      }
+    `;
+  
+    try {
+      const result = await request(graphqlAPI, query, {}, headers);
+      console.log("Full Categories API response:", result);  // Log the full response
+      return result.categories;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return [];
+    }
+  };

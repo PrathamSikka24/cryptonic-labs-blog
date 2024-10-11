@@ -125,7 +125,7 @@ export const getComments = async (slug) => {
   export const getCategories = async () => {
     const query = gql`
       query GetCategories {
-        categories {
+        categories {  // Use plural 'categories' here based on the schema
           name
           slug
         }
@@ -133,18 +133,17 @@ export const getComments = async (slug) => {
     `;
   
     try {
-      const headers = {
-        authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPHCMS_TOKEN}`,
-      };
       const result = await request(graphqlAPI, query, {}, headers);
       console.log("Full Categories API response:", result);
-      return result.categories;
+      return result.categories;  // Return 'categories' (plural)
     } catch (error) {
       console.error("Error fetching categories:", error);
       return [];
     }
   };
-
+  
+  
+  
 
   export const getPostDetails = async (slug) => {
     const query = gql`
